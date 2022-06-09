@@ -29,12 +29,13 @@ public class UserValidator implements Validator {
     public void validate(Object target, Errors errors) {
         User user = (User) target;
         User fromDbPassword = userService.findUserByEmail(user.getEmail());
+        User fromDbEmail = userService.findByEmail(user.getEmail());
 
 
 //        Email
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"email","NotEmpty");
         if (user.getEmail().length() < 8 || user.getEmail().length() > 16){
-            errors.rejectValue("email","Email must be between 6 and 16 symbols");
+            errors.rejectValue("email","Size.userForm.email");
         }
         if (userService.findUserByEmail(user.getEmail()) != null) {
             errors.rejectValue("email", "Duplicate.userForm.email");
@@ -73,6 +74,24 @@ public class UserValidator implements Validator {
         if (user.getPasswordNewConfirm() != null) {
             if (!user.getPasswordNewConfirm().equals(user.getNewPassword())) {
                 errors.rejectValue("passwordNewConfirm", "Diff.userForm.getPasswordNewConfirm");
+            }
+        }
+//        NEW Email
+        if (user.getNewEmail() != null) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newEmail", "NotEmpty");
+            if (user.getNewEmail().length() < 6 || user.getNewEmail().length() > 32) {
+                errors.rejectValue("newEmail", "Size.userForm.newEmail");
+            }
+            if (userService.findByEmail(user.getNewEmail()) != null) {
+                errors.rejectValue("newEmail", "Duplicate.userForm.newEmail");
+            }
+
+            if (!user.getNewEmail().equals(user.getEmailNewConfirm())) {
+                errors.rejectValue("emailNewConfirm", "Diff.userForm.emailConfirm");
+            }
+
+            if (!user.getOldEmail().equals(fromDbEmail.getEmail())) {
+                errors.rejectValue("oldEmail", "Diff.userForm.oldEmail");
             }
         }
 

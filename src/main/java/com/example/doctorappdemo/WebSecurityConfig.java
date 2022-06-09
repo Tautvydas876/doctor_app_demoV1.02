@@ -29,16 +29,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/assets/**", "/coming_soon/**", "/css/**", "/img/**", "/js/**", "/layerslider/**", "/sass/**", "/video/**", "/registration" ,"/login").permitAll()
+                .antMatchers("/assets/**", "/coming_soon/**", "/css/**", "/img/**", "/js/**", "/layerslider/**", "/sass/**", "/video/**", "/registration" ,"/login", "/blog" , "/blog-post").permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .permitAll()
                 .and()
-                .logout().permitAll()
-                .and()
-                .exceptionHandling()
-                .accessDeniedPage("/404");
+                .logout().permitAll();
+
 
 
     }

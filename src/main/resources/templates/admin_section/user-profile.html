@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
     <meta charset="utf-8">
@@ -47,7 +47,10 @@
     <link href="../../static/css/vendors.css" rel="stylesheet" th:href="@{/css/vendors.css}">
     <link href="../../static/css/icon_fonts/css/all_icons.min.css" rel="stylesheet"
           th:href="@{/css/icon_fonts/css/all_icons.min.css}">
-
+    <style>.has-error {color: #D8000C; background-color: #FFBABA;}</style>
+    <style>.has-error-e {color: #ffffff; background-color: #f36942}</style>
+    <style>.has-message-m {color: #ffffff; background-color: #f3a542;}</style>
+    <style>.center_b{display: flex; justify-content: center;}</style>
 
 </head>
 
@@ -259,6 +262,8 @@
 <form class="content-wrapper" th:action="@{/userPage/update}" method="post" th:object="${user}" >
     <input type="hidden" th:field="*{id}">
     <input type="hidden" th:field="*{email}">
+    <input type="hidden" th:field="*{userName}">
+
     <div class="container-fluid">
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
@@ -362,16 +367,23 @@
                     </div>
                     <div class="form-group">
                         <label>Old email</label>
-                        <input class="form-control" name="old_email" id="old_email" type="email">
+                        <input class="form-control" name="old_email" id="old_email" type="email" th:field="*{oldEmail}">
                     </div>
+                    <span class="has-error" th:if="${#fields.hasErrors('oldEmail')}" th:errors="*{oldEmail}"></span>
+
                     <div class="form-group">
                         <label>New email</label>
-                        <input class="form-control" name="new_email" id="new_email" type="email">
+                        <input class="form-control" name="new_email" id="new_email" type="email" th:field="*{newEmail}">
                     </div>
+                    <span class="has-error" th:if="${#fields.hasErrors('newEmail')}" th:errors="*{newEmail}"></span>
+
                     <div class="form-group">
                         <label>Confirm new email</label>
-                        <input class="form-control" name="confirm_new_email" id="confirm_new_email" type="email">
+                        <input class="form-control" name="confirm_new_email" id="confirm_new_email" type="email" th:field="*{emailNewConfirm}">
                     </div>
+                    <span class="has-error" th:if="${#fields.hasErrors('emailNewConfirm')}" th:errors="*{emailNewConfirm}"></span>
+                    <span class="has-error" th:if="${#fields.hasErrors('newEmail')}" th:errors="*{newEmail}"></span>
+
                 </div>
             </div>
         </div>
@@ -438,6 +450,7 @@
 <script src="../admin_section/js/admin.js" th:src="@{/admin_section/js/admin.js}"></script>
 <!-- Custom scripts for this page-->
 <script src="../admin_section/vendor/dropzone.min.js" th:src="@{/admin_section/vendor/dropzone.min.js}"></script>
-
+<!-- SPECIFIC SCRIPTS -->
+<script src="../../static/js/pw_strenght.js" th:src="@{/js/pw_strenght.js}"></script>
 </body>
 </html>

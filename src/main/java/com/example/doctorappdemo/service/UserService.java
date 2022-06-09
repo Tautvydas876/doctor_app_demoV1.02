@@ -11,4 +11,9 @@ public interface UserService {
     void save(User user);
 
     void saveNoPassword(User user);
+
+    User findByEmail(String email);
+
+    int findId(String username);
+    User findUserById(int id);
 }

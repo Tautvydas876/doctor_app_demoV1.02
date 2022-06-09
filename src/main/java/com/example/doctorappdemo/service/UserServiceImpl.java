@@ -29,15 +29,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        if (!user.getPassword().equals("")) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        } else {
+            User userTempID = userRepository.findById(user.getId());
+            String userTempPassword = userTempID.getPassword();
+            user.setPassword(userTempPassword);
+        }
         userRepository.save(user);
     }
 
     @Override
     public void saveNoPassword(User user) {
+//        System.out.println("user oldEmail from db => " + user.getOldEmail());
+//        System.out.println("user Email from db => " + user.getEmail());
+
         User userTempID = userRepository.findById(user.getId());
+
         String userTempPassword = userTempID.getPassword();
         user.setPassword(userTempPassword);
         userRepository.save(user);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public int findId(String username) {
+        return userRepository.findId(username);
+    }
+
+    @Override
+    public User findUserById(int id) {
+        return userRepository.findById(id);
     }
 }

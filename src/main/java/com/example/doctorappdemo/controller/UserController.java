@@ -14,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Objects;
+
 
 @Controller
 public class UserController {
@@ -32,6 +34,8 @@ public class UserController {
         this.userService = userService;
     }
 
+    private static int ID =0;
+
     //veikia
     @GetMapping("/login")
     public String loginForm(Model model, String error, String logout) {
@@ -44,6 +48,75 @@ public class UserController {
             model.addAttribute("message", "You have been logged out");
         return "login";
     }
+
+
+    //veikia
+    @GetMapping("/userPage")
+    public String viewDetails(@AuthenticationPrincipal UserDetails loggerUser, Model model) {
+
+        String userName = loggerUser.getUsername();
+        User user = userService.findByEmail(userName);
+
+        if (user != null)
+            ID = userService.findId(userName);
+
+        User userFromDb = userService.findUserById(ID);
+
+
+        if (Objects.equals(user, userFromDb)) {
+            model.addAttribute("user", user);
+        } else {
+            model.addAttribute("user", userFromDb);
+        }
+        return "/admin_section/user-profile";
+    }
+
+
+    @PostMapping("/userPage/update")
+    public String updateDetails(@ModelAttribute("user") User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+//        System.out.println("user " + user.getEmail() + "  userPass " + user.getOldPassword());
+        userValidator.validate(user, bindingResult);
+
+
+        if (user.getOldPassword().equals("") && user.getNewPassword().equals("") && user.getPasswordNewConfirm().equals("")) {
+            if (!(user.getOldEmail().equals("") || user.getNewEmail().equals("") || user.getEmailNewConfirm().equals(""))) {
+                if (bindingResult.hasFieldErrors("newEmail") || bindingResult.hasFieldErrors("emailNewConfirm") || bindingResult.hasFieldErrors("oldEmail")) {
+                    redirectAttributes.addFlashAttribute("error", "An error occured while saving the changes (email)");
+                    return "redirect:/userPage";
+                }
+                redirectAttributes.addFlashAttribute("message", "Email saved successfuly");
+                user.setEmail(user.getNewEmail());
+                userService.saveNoPassword(user);
+                return "redirect:/userPage";
+            }
+        } else if (user.getOldEmail().equals("") || user.getNewEmail().equals("") || user.getEmailNewConfirm().equals("")) {
+            if (!(user.getOldPassword().equals("") || user.getNewPassword().equals("") || user.getPasswordNewConfirm().equals(""))) {
+                if (bindingResult.hasFieldErrors("newPassword") || bindingResult.hasFieldErrors("passwordNewConfirm") || bindingResult.hasFieldErrors("oldPassword")) {
+                    redirectAttributes.addFlashAttribute("error", "En error occured while saving the changes (password)");
+                    return "redirect:/userPage";
+                }
+                user.setPassword(user.getNewPassword());
+                userService.save(user);
+                redirectAttributes.addFlashAttribute("message", "Password saved successfuly");
+                return "redirect:/userPage";
+            }
+        }
+        return "redirect:/admin_section/user-profile";
+    }
+
+
+    @GetMapping("/")
+    public String index(Model model) {
+        return "index";
+    }
+
+    @GetMapping("/user-profile")
+    public String showUserProfile() {
+        return "/admin_section/user-profile";
+    }
+
+
+
 
 
 //    @GetMapping("/registration")
@@ -67,44 +140,4 @@ public class UserController {
 //        return "/admin_section/user-profile";
 //    }
 
-    //veikia
-    @GetMapping("/userPage")
-    public String viewDetails(@AuthenticationPrincipal UserDetails loggerUser, Model model) {
-        String username = loggerUser.getUsername();
-        User user = userService.findUserByEmail(username);
-        model.addAttribute("user", user);
-        return "/admin_section/user-profile";
-    }
-
-
-    @PostMapping("/userPage/update")
-    public String updateDetails(@ModelAttribute("user") User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        System.out.println("user " + user.getEmail() + "  userPass " + user.getOldPassword());
-        userValidator.validate(user, bindingResult);
-
-//      Password
-        if (!(user.getOldPassword().equals("") || user.getNewPassword().equals("") || user.getPasswordNewConfirm().equals(""))) {
-            if (bindingResult.hasFieldErrors("newPassword") || bindingResult.hasFieldErrors("passwordNewConfirm") || bindingResult.hasFieldErrors("oldPassword")) {
-                redirectAttributes.addFlashAttribute("error", "En error occured while saving the changes (password)");
-                return "redirect:/userPage";
-            }
-            user.setPassword(user.getNewPassword());
-            userService.save(user);
-            redirectAttributes.addFlashAttribute("message", "Password saved successfuly");
-            return "redirect:/userPage";
-        }
-
-        return "redirect:/admin_section/user-profile";
-    }
-
-
-    @GetMapping("/")
-    public String index(Model model) {
-        return "index";
-    }
-
-    @GetMapping("/user-profile")
-    public String showUserProfile() {
-        return "/admin_section/user-profile";
-    }
 }

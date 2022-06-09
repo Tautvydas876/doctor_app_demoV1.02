@@ -41,16 +41,58 @@ public class User {
     @Transient
     private String passwordNewConfirm;
 
+    @Transient
+    private String oldEmail;
+    @Transient
+    private  String newEmail;
+    @Transient
+    private String emailNewConfirm;
 
     public User() {
     }
 
+    public User(String userName, String email, String password) {
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+    }
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
+
+    public User(int id, String data, String userName, String email, String password, char[] role, String passwordConfirm, String oldPassword, String newPassword, String passwordNewConfirm, String oldEmail, String newEmail, String emailNewConfirm) {
+        this.id = id;
+        this.data = data;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.passwordConfirm = passwordConfirm;
+        this.oldPassword = oldPassword;
+        this.newPassword = newPassword;
+        this.passwordNewConfirm = passwordNewConfirm;
+        this.oldEmail = oldEmail;
+        this.newEmail = newEmail;
+        this.emailNewConfirm = emailNewConfirm;
+    }
+
+    public User(String data, String userName, String email, String password, char[] role, String passwordConfirm, String oldPassword, String newPassword, String passwordNewConfirm, String oldEmail, String newEmail, String emailNewConfirm) {
+        this.data = data;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.passwordConfirm = passwordConfirm;
+        this.oldPassword = oldPassword;
+        this.newPassword = newPassword;
+        this.passwordNewConfirm = passwordNewConfirm;
+        this.oldEmail = oldEmail;
+        this.newEmail = newEmail;
+        this.emailNewConfirm = emailNewConfirm;
+    }
 
     public User(int id, String data, String userName, String email, String password, String passwordConfirm, String oldPassword, String newPassword, String passwordNewConfirm) {
         this.id = id;
@@ -156,5 +198,29 @@ public class User {
 
     public void setRole(char[] role) {
         this.role = role;
+    }
+
+    public String getOldEmail() {
+        return oldEmail;
+    }
+
+    public void setOldEmail(String oldEmail) {
+        this.oldEmail = oldEmail;
+    }
+
+    public String getNewEmail() {
+        return newEmail;
+    }
+
+    public void setNewEmail(String newEmail) {
+        this.newEmail = newEmail;
+    }
+
+    public String getEmailNewConfirm() {
+        return emailNewConfirm;
+    }
+
+    public void setEmailNewConfirm(String emailNewConfirm) {
+        this.emailNewConfirm = emailNewConfirm;
     }
 }
